@@ -103,14 +103,14 @@ const countStatsForAdmin = () => {
                     roleId: "R2",
                 },
             });
-            let clinicCountStats = await db.Clinic.count();
+            let specialtyCountStats = await db.Specialty.count();
 
             resolve({
                 errCode: 0,
                 data: {
                     userCountStats,
                     doctorCountStats,
-                    clinicCountStats,
+                    specialtyCountStats
                 },
             });
         } catch (error) {

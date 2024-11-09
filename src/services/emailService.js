@@ -16,7 +16,7 @@ let sendSimpleEmail = async (dataSend) => {
 
     // send mail with defined transport object
     const info = await transporter.sendMail({
-        from: '"HealthBookings" <HealthBookings@gmail.com>', // sender address
+        from: '"HeThongThuCucTCI" <ThuCucTCI@gmail.com>', // sender address
         to: dataSend.receiverEmail, // list of receivers
         subject: "Thông tin đặt lịch khám bệnh ✔", // Subject line
         html: getBodyHTMLEmail(dataSend),
@@ -28,7 +28,7 @@ let getBodyHTMLEmail = (dataSend) => {
     if (dataSend.language === "en") {
         result = `
         <h3>Dear ${dataSend.patientName}</h3>
-        <p>You receive this email when you make an appointment on HealthBookings</p>
+        <p>You receive this email when you make an appointment on ThuCuc General Clinic</p>
         <p>Information to schedule an appointment:</p>
         <div>
             <b>Time: ${dataSend.time}</b>
@@ -55,7 +55,7 @@ let getBodyHTMLEmail = (dataSend) => {
     if (dataSend.language === "vi") {
         result = `
         <h3>Xin chào ${dataSend.patientName}</h3>
-        <p>Bạn nhận được email này khi đã đặt lịch khám trên HealthBookings</p>
+        <p>Bạn nhận được email này khi đã đặt lịch khám trên Phòng khám Đa Khoa Thu Cúc</p>
         <p>Thông tin đặt lịch:</p>
         <div>
             <b>Thời gian: ${dataSend.time}</b>
@@ -64,7 +64,7 @@ let getBodyHTMLEmail = (dataSend) => {
            <b>Bác sĩ: ${dataSend.doctorName}</b>
         </div>
         <div>
-            <b>Địa chỉ cơ sở y tế: ${dataSend.addressClinic}</b>
+            <b>Địa chỉ phòng khám: ${dataSend.addressClinic}</b>
         </div>
         <div>
             <p>Mã lịch hẹn: ${dataSend.token}</p>
@@ -97,16 +97,15 @@ const sendAttachment = async (dataSend) => {
 
     // send mail with defined transport object
     const info = await transporter.sendMail({
-        from: '"HealthBookings" <HealthBookings@gmail.com>', // sender address
+        from: '"HeThongThuCucTCI" <ThuCucTCI@gmail.com>', // sender address
         to: dataSend.email, // list of receivers
         subject: "Kết quả khám bệnh ✔", // Subject line
         html: getBodyHTMLEmailRemedy(dataSend),
         attachments: [
             //encoded string as an attachment
             {
-                filename: `remedy-${
-                    dataSend.patientId
-                }-${new Date().getTime()}.png`,
+                filename: `remedy-${dataSend.patientId
+                    }-${new Date().getTime()}.png`,
                 content: dataSend.image.split("base64,")[1],
                 encoding: "base64",
             },
@@ -119,7 +118,7 @@ let getBodyHTMLEmailRemedy = (dataSend) => {
     if (dataSend.language === "en") {
         result = `
         <h3>Dear ${dataSend.patientName}</h3>
-        <p>You receive this email when you make an appointment on HealthBookings</p>
+        <p>You receive this email when you make an appointment on HeThongThuCucTCI</p>
         <p>Information to schedule an appointment:</p>
         <p>Disease information is sent in the attached file.</p>
         <div>
@@ -131,7 +130,7 @@ let getBodyHTMLEmailRemedy = (dataSend) => {
     if (dataSend.language === "vi") {
         result = `
         <h3>Xin chào ${dataSend.patientName}</h3>
-        <p>Bạn nhận được email này khi đã đặt lịch khám trên HealthBookings</p>
+        <p>Bạn nhận được email này khi đã đặt lịch khám trên HeThongThuCucTCI</p>
         <p>Thông tin đơn khám bệnh: </p>
         <p>Thông tin đơn thuốc/hóa đơn khám bệnh được gửi trong file đính kèm.</p>
         <div>
