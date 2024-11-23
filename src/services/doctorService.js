@@ -290,6 +290,7 @@ let saveDetailInforDoctor = (inputData) => {
                         note: inputData.note,
                     });
                 }
+                // paymentId
 
                 resolve({
                     errCode: 0,

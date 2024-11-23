@@ -203,6 +203,7 @@ const getDetailSpecialtyById = (inputId, location) => {
     });
 };
 
+
 const searchSpecialtyByName = (search, lang) => {
     return new Promise(async (resolve, reject) => {
         try {

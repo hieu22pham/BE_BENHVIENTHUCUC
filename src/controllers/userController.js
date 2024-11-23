@@ -170,8 +170,8 @@ const handleUpdateProfile = async (req, res) => {
 
 const handleChangePassword = async (req, res) => {
     try {
-        const data = req.body;
 
+        const data = req.body;
         let result = await userService.changePassword(data);
         return res.status(200).json(result);
     } catch (error) {
