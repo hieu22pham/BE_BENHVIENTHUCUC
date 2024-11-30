@@ -38,8 +38,8 @@ const getPatientNamesByPatientId = async (req, res) => {
     }
 
     try {
-        const patients = await db.Examination.findAll({
-            where: { patient_id: patientId }, // Filter by patientId
+        const patients = await db.Booking.findAll({
+            where: { patientId: patientId }, // Filter by patientId
             raw: true, // Return simple objects (not Sequelize instances)
         });
 
@@ -49,6 +49,8 @@ const getPatientNamesByPatientId = async (req, res) => {
                 errMessage: "Không tìm thấy bệnh nhân với ID này.", // No patients found
             });
         }
+
+        console.log("patients: ", patients)
 
         return res.status(200).json({
             errCode: 0,

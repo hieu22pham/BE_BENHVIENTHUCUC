@@ -106,6 +106,48 @@ const handleEditBookingById = async (req, res) => {
     }
 };
 
+const handleEditInvoiceById = async (req, res) => {
+    const bookingId = req.params.id;
+    const { payment } = req.body;
+
+    if (!bookingId || !payment) {
+        return res.status(400).json({
+            message: 'Thiếu ID hoặc trạng thái mới',
+        });
+    }
+
+    try {
+        // Tìm booking trong cơ sở dữ liệu
+        const booking = await db.Booking.findOne({
+            where: { id: bookingId },
+            raw: false, // Đảm bảo nhận được đối tượng Sequelize
+        });
+
+        if (!booking) {
+            return res.status(404).json({
+                message: 'Không tìm thấy lịch hẹn',
+            });
+        }
+
+        // Debug thông tin đối tượng
+        console.log("Booking found:", booking);
+
+        // Cập nhật trạng thái của booking
+        booking.payment = payment;
+        await booking.save();
+
+        return res.status(200).json({
+            message: 'Cập nhật trạng thái thành công',
+        });
+    } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+
+        return res.status(500).json({
+            message: 'Đã xảy ra lỗi trong quá trình xử lý',
+        });
+    }
+};
+
 const getBookingsByUserId = async (req, res) => {
     try {
         const userId  = req.params.id; // Lấy userId từ params
@@ -119,7 +161,7 @@ const getBookingsByUserId = async (req, res) => {
 
         const bookings = await db.Booking.findAll({
             where: { patientId: userId }, // Lọc theo parentId (trong trường hợp này là patientId)
-            attributes: ["id", "doctorId", "patientId","date", "statusId", "reason"], // Các trường cần lấy từ bảng Booking
+            attributes: ["id", "doctorId","timeType", "patientId","date", "statusId", "reason"], // Các trường cần lấy từ bảng Booking
         });
 
         if (!bookings.length) {
@@ -143,6 +185,8 @@ const getBookingsByUserId = async (req, res) => {
         });
     }
 };
+
+
 
 const getDoctorInfoById = async (req, res) => {
     try {
@@ -190,5 +234,6 @@ module.exports = {
     handleGetBookingById,
     handleEditBookingById,
     getBookingsByUserId,
-    getDoctorInfoById
+    getDoctorInfoById,
+    handleEditInvoiceById
 };

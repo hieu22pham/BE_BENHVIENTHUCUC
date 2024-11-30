@@ -401,7 +401,7 @@ let initWebRoutes = (app) => {
     //Viết api quản lý bệnh nhân
     router.get(
         "/api/get-list-patient-for-doctor",
-        doctorController.handleGetListPatientForDoctor
+        doctorController.handleGetListPatientForDoctorTimetype
     );
 
     router.get(
@@ -495,6 +495,7 @@ let initWebRoutes = (app) => {
     );
     router.get(`/api/get-examination-payment/:id`, receptionistController.handleGetBookingById);
     router.put(`/api/update-booking-status/:id`, receptionistController.handleEditBookingById);
+    router.put(`/api/update-invoice-status/:id`, receptionistController.handleEditInvoiceById);
 
     router.post(`/api/post-examination`, examinationController.handlePostExamination);
     router.get(`/api/get-examination/:id`, examinationController.getPatientNamesByPatientId);

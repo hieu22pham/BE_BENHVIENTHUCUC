@@ -685,7 +685,68 @@ const getProfileDoctorById = (doctorId) => {
     });
 };
 
-const getListPatientForDoctor = (doctorId, date, timeType) => {
+const getListPatientForDoctor = (doctorId, date) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!doctorId || !date) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Không tìm tham số yêu cầu!",
+                });
+            } else {
+                //Lấy ra các booking đã được confirm
+                let data = await db.Booking.findAll({
+                    where: {
+                        statusId: "S2",
+                        doctorId: doctorId,
+                        date: date,
+                    },
+
+                    include: [
+                        {
+                            model: db.User,
+                            as: "patientData",
+                            attributes: [
+                                "email",
+                                "lastName",
+                                "firstName",
+                                "address",
+                                "birthday",
+                                "gender",
+                                "phoneNumber",
+                            ],
+
+                            include: [
+                                {
+                                    model: db.Gender,
+                                    as: "genderData",
+                                    attributes: ["valueVi", "valueEn"],
+                                },
+                            ],
+                        },
+                        {
+                            model: db.TimeType,
+                            as: "timeTypeDataPatient",
+                            attributes: ["valueVi", "valueEn"],
+                        },
+                    ],
+
+                    raw: true,
+                    nest: true,
+                });
+
+                resolve({
+                    errCode: 0,
+                    data: data,
+                });
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getListPatientForDoctorTimeType = (doctorId, date, timeType) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!doctorId || !date) {
@@ -710,6 +771,7 @@ const getListPatientForDoctor = (doctorId, date, timeType) => {
                             attributes: [
                                 "email",
                                 "lastName",
+                                "firstName",
                                 "address",
                                 "birthday",
                                 "gender",
@@ -770,6 +832,7 @@ const getListPatientForDoctorS5 = (doctorId, date, timeType) => {
                             attributes: [
                                 "email",
                                 "lastName",
+                                "firstName",
                                 "address",
                                 "birthday",
                                 "gender",
@@ -1019,7 +1082,9 @@ module.exports = {
     searchDoctorByName,
     getDoctorByClinic,
     createSchedules,
-    getListPatientForDoctorS5
+    getListPatientForDoctor,
+    getListPatientForDoctorS5,
+    getListPatientForDoctorTimeType
 };
 //- Sequelize sẽ trả về kết quả truy vấn dưới dạng các đối tượng JavaScript thuần túy (plain JavaScript objects) thay vì các
 //đối tượng Sequelize.

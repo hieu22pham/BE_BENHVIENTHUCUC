@@ -165,6 +165,24 @@ const handleGetListPatientForDoctor = async (req, res) => {
         let result = await doctorService.getListPatientForDoctor(
             req.query.doctorId,
             req.query.date,
+        );
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Lỗi từ server...",
+        });
+    }
+};
+
+const handleGetListPatientForDoctorTimetype = async (req, res) => {
+    console.log(req.query);
+    try {
+        console.log("req.query: ", req.query)
+        let result = await doctorService.getListPatientForDoctorTimeType(
+            req.query.doctorId,
+            req.query.date,
             req.query.timeType
         );
         return res.status(200).json(result);
@@ -176,6 +194,7 @@ const handleGetListPatientForDoctor = async (req, res) => {
         });
     }
 };
+
 
 const handleGetListPatientForDoctorAdmin = async (req, res) => {
     console.log(req.query);
@@ -314,5 +333,6 @@ module.exports = {
     handleSearchDoctorByName,
     handleGetDoctorByClinic,
     handleGetListPatientForDoctorAdmin,
-    handleGetListPatientForDoctorAdminS5
+    handleGetListPatientForDoctorAdminS5,
+    handleGetListPatientForDoctorTimetype
 };
