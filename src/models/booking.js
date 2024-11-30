@@ -1,57 +1,66 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
     class Booking extends Model {
-        /**
-         * Helper method for defining associations.
-         * This method is not a part of Sequelize lifecycle.
-         * The `models/index` file will call this method automatically.
-         */
         static associate(models) {
-            // define association here
+            // Liên kết với User qua doctorId
             Booking.belongsTo(models.User, {
                 foreignKey: "doctorId",
+                as: "doctorData", // Alias cho doctor
             });
 
+            // Liên kết với User qua patientId
             Booking.belongsTo(models.User, {
                 foreignKey: "patientId",
-                targetKey: "id",
-                as: "patientData",
+                as: "patientData", // Alias cho patient
             });
 
+            // Liên kết với TimeType
             Booking.belongsTo(models.TimeType, {
                 foreignKey: "timeType",
                 targetKey: "id",
-                as: "timeTypeDataPatient",
+                as: "timeTypeDataPatient", // Alias cho TimeType
             });
 
+            // Liên kết với Status
             Booking.belongsTo(models.Status, {
                 foreignKey: "statusId",
                 targetKey: "id",
-                as: "statusData",
+                as: "statusData", // Alias cho Status
             });
 
-            //1-1
+            // Liên kết với History
             Booking.hasOne(models.History, {
                 foreignKey: "bookingId",
-                as: "bookingData",
+                as: "bookingData", // Alias cho History
             });
         }
     }
+
     Booking.init(
         {
-            statusId: DataTypes.STRING, //là key của bảng allcode
+            statusId: DataTypes.STRING,
             doctorId: DataTypes.INTEGER,
             patientId: DataTypes.INTEGER,
-            date: DataTypes.STRING, //tương tự TIMESTAMP trong SQL
+            date: DataTypes.STRING,
             timeType: DataTypes.STRING,
-            token: DataTypes.STRING, //xác thực booking để xác nhận,
+            token: DataTypes.STRING,
             reason: DataTypes.STRING,
+            status: {
+                type: DataTypes.STRING,
+                defaultValue: "pending",
+            },
+            payment: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
         },
         {
             sequelize,
             modelName: "Booking",
         }
     );
+
     return Booking;
 };

@@ -19,18 +19,6 @@ let buildUrlEmail = (doctorId, token) => {
 const postBookAppointment = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (
-                !data.email ||
-                !data.date ||
-                !data.doctorId ||
-                !data.timeType ||
-                !data.fullName
-            ) {
-                resolve({
-                    errCode: 1,
-                    errMessage: "Không tìm thấy tham số yêu cầu!",
-                });
-            } else {
                 let token = uuidv4(); //tạo ra một chuỗi ngẫu nhiên
 
                 //nếu có thì trả về, không có thì tạo mới(defaults)
@@ -111,7 +99,6 @@ const postBookAppointment = (data) => {
                     errCode: 0,
                     message: "Đặt lịch hẹn thành công!",
                 });
-            }
         } catch (error) {
             console.log(error);
             reject(error);
@@ -353,9 +340,45 @@ const cancleBooking = (id) => {
     });
 };
 
+// const newReview = (data) => {
+//     return new Promise(async (resolve, reject) => {
+//         console.log("Data: ", data)
+//         try {
+           
+//                 let review = await db.Review.create({
+//                     rating: data.rating,
+//                     doctorId: data.doctorId,
+//                     comment: data.comment ,
+//                 });
+
+//                 // review.save()
+
+//                 let history = await db.History.findOne({
+//                     where: {
+//                         bookingId: data.bookingId,
+//                     },
+//                     raw: false,
+//                 });
+
+//                 if (history) {
+//                     history.reviewId = parseInt(review.id);
+//                     history.save();
+//                 }
+
+//                 resolve({
+//                     errCode: 0,
+//                     message: "Cảm ơn bạn vì sự phản hồi từ bạn!",
+//                 });
+//         } catch (error) {
+//             reject(error);
+//         }
+//     });
+// };
+
 const newReview = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log("data: ", data)
             if (!data.rating || !data.doctorId) {
                 resolve({
                     errCode: 1,
@@ -368,12 +391,20 @@ const newReview = (data) => {
                     comment: data.comment ? data.comment : "",
                 });
 
+                let newHistory = await db.History.create({
+                    reviewId: review.id,
+                    doctorId: review.doctorId,
+                    patientId: data.patientId,
+                    bookingId: data.bookingId
+                });
+
                 let history = await db.History.findOne({
                     where: {
                         bookingId: data.bookingId,
                     },
                     raw: false,
                 });
+                newHistory.save()
 
                 if (history) {
                     history.reviewId = parseInt(review.id);

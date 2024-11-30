@@ -83,9 +83,10 @@ let handleUserLogin2 = (username, password) => {
                     raw: true,
                 });
 
+                console.log("User from DB:", user);
                 if (user) {
-                    // compare passWord
-                    let checkPassword = await bcrypt.compareSync(
+                    // So sánh mật khẩu
+                    let checkPassword = bcrypt.compareSync(
                         password,
                         user.passWord
                     );
@@ -105,6 +106,7 @@ let handleUserLogin2 = (username, password) => {
 
                         userData.errCode = 0;
                         userData.message = "OK";
+                        userData.id = user.id; // Lấy id từ user
                         userData.token = token;
                     } else {
                         userData.errCode = 3;

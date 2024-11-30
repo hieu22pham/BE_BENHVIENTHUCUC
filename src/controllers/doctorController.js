@@ -37,19 +37,19 @@ let handleGetTopDoctor = async (req, res) => {
     }
 };
 
-let handleGetAllDoctor = async (req, res) => {
-    try {
-        let doctors = await doctorService.getAllDoctor();
-        // console.log(doctors);
-        res.status(200).json(doctors);
-    } catch (error) {
-        console.log(error);
-        return res.status(200).json({
-            errCode: -1,
-            errMessage: "Lỗi từ server...",
-        });
-    }
-};
+    let handleGetAllDoctor = async (req, res) => {
+        try {
+            let doctors = await doctorService.getAllDoctor();
+            // console.log(doctors);
+            res.status(200).json(doctors);
+        } catch (error) {
+            console.log(error);
+            return res.status(200).json({
+                errCode: -1,
+                errMessage: "Lỗi từ server...",
+            });
+        }
+    };
 
 const handlePostInforDoctor = async (req, res) => {
     try {
@@ -79,7 +79,7 @@ const handleGetDetailDoctorById = async (req, res) => {
 const handleBulkCreateSchedule = async (req, res) => {
     try {
         let response = await doctorService.bulkCreateSchedule(req.body);
-        return res.status(200).json(response);
+        return res.status(200).json(response);  
     } catch (error) {
         console.log(error);
         return res.status(200).json({
@@ -96,6 +96,8 @@ const handleGetScheduleDoctorByDate = async (req, res) => {
             req.query.doctorId,
             req.query.date
         );
+
+        console.log(response)
         return res.status(200).json(response);
     } catch (error) {
         console.log(error);
@@ -106,11 +108,16 @@ const handleGetScheduleDoctorByDate = async (req, res) => {
     }
 };
 
+
+
+
 const handleDeleteSchedule = async (req, res) => {
     try {
-        const scheduleId = parseInt(req.params.id);
+        const scheduleId = req.params.id;
+        console.log(req.params.id)
         let response = await doctorService.deleteSchedule(scheduleId);
         return res.status(200).json(response);
+        // return res.status(200)
     } catch (error) {
         console.log(error);
         return res.status(200).json({
@@ -152,10 +159,47 @@ const handleGetProfileDoctorById = async (req, res) => {
 };
 
 const handleGetListPatientForDoctor = async (req, res) => {
+    console.log(req.query);
+    try {
+        console.log("req.query: ", req.query)
+        let result = await doctorService.getListPatientForDoctor(
+            req.query.doctorId,
+            req.query.date,
+            req.query.timeType
+        );
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Lỗi từ server...",
+        });
+    }
+};
+
+const handleGetListPatientForDoctorAdmin = async (req, res) => {
+    console.log(req.query);
     try {
         let result = await doctorService.getListPatientForDoctor(
             req.query.doctorId,
-            req.query.date
+            req.query.date,
+        );
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Lỗi từ server...",
+        });
+    }
+};
+
+const handleGetListPatientForDoctorAdminS5 = async (req, res) => {
+    console.log(req.query);
+    try {
+        let result = await doctorService.getListPatientForDoctorS5(
+            req.query.doctorId,
+            req.query.date,
         );
         return res.status(200).json(result);
     } catch (error) {
@@ -206,6 +250,53 @@ let handleGetDoctorByClinic = async (req, res) => {
     }
 };
 
+const handlePostScheduleDoctorByDate = async (req, res) => {
+    console.log("Received body:", req.body);
+
+    const { doctorId, date, timeType, maxNumber, currentNumber } = req.body;
+
+    // Kiểm tra các tham số yêu cầu
+    if (!doctorId || !date || !timeType || !maxNumber || currentNumber === undefined) {
+        return res.status(400).json({
+            errCode: 1,
+            errMessage: "Không tìm tham số yêu cầu!",
+        });
+    }
+
+    try {
+        // Tạo dữ liệu lịch khám
+        const scheduleData = {
+            doctorId,
+            date,
+            timeType,
+            maxNumber,
+            currentNumber,
+        };
+
+        // Gọi service để xử lý
+        const response = await doctorService.createSchedules(scheduleData);
+
+        if (response.errCode === 0) {
+            return res.status(200).json({
+                errCode: 0,
+                errMessage: "Lịch khám được tạo thành công!",
+            });
+        } else {
+            return res.status(500).json({
+                errCode: response.errCode,
+                errMessage: response.errMessage || "Lỗi trong quá trình tạo lịch khám!",
+            });
+        }
+    } catch (error) {
+        console.error("Error in handlePostScheduleDoctorByDate:", error);
+        return res.status(500).json({
+            errCode: -1,
+            errMessage: "Lỗi từ server!",
+        });
+    }
+};
+
+
 module.exports = {
     handleGetTopDoctorHome,
     handleGetAllDoctor,
@@ -213,6 +304,7 @@ module.exports = {
     handleGetDetailDoctorById,
     handleBulkCreateSchedule,
     handleGetScheduleDoctorByDate,
+    handlePostScheduleDoctorByDate,
     handleDeleteSchedule,
     handleGetExtraInforDoctorById,
     handleGetProfileDoctorById,
@@ -221,4 +313,6 @@ module.exports = {
     handleSendRemedy,
     handleSearchDoctorByName,
     handleGetDoctorByClinic,
+    handleGetListPatientForDoctorAdmin,
+    handleGetListPatientForDoctorAdminS5
 };

@@ -403,7 +403,7 @@ const bulkCreateSchedule = (data) => {
                 if (schedules && schedules.length > 0) {
                     //Thêm thuộc tính để lưu vào csdl
                     schedules = schedules.map((item) => {
-                        item.maxNumber = MAX_NUMBER_SCHEDULE;
+                        item.maxNumber = item.maxNumber;
                         item.currentNumber = 0;
                         return item;
                     });
@@ -685,7 +685,7 @@ const getProfileDoctorById = (doctorId) => {
     });
 };
 
-const getListPatientForDoctor = (doctorId, date) => {
+const getListPatientForDoctor = (doctorId, date, timeType) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!doctorId || !date) {
@@ -698,6 +698,67 @@ const getListPatientForDoctor = (doctorId, date) => {
                 let data = await db.Booking.findAll({
                     where: {
                         statusId: "S2",
+                        doctorId: doctorId,
+                        date: date,
+                        timeType: timeType
+                    },
+
+                    include: [
+                        {
+                            model: db.User,
+                            as: "patientData",
+                            attributes: [
+                                "email",
+                                "lastName",
+                                "address",
+                                "birthday",
+                                "gender",
+                                "phoneNumber",
+                            ],
+
+                            include: [
+                                {
+                                    model: db.Gender,
+                                    as: "genderData",
+                                    attributes: ["valueVi", "valueEn"],
+                                },
+                            ],
+                        },
+                        {
+                            model: db.TimeType,
+                            as: "timeTypeDataPatient",
+                            attributes: ["valueVi", "valueEn"],
+                        },
+                    ],
+
+                    raw: true,
+                    nest: true,
+                });
+
+                resolve({
+                    errCode: 0,
+                    data: data,
+                });
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getListPatientForDoctorS5 = (doctorId, date, timeType) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!doctorId || !date) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Không tìm tham số yêu cầu!",
+                });
+            } else {
+                //Lấy ra các booking đã được confirm
+                let data = await db.Booking.findAll({
+                    where: {
+                        statusId: "S5",
                         doctorId: doctorId,
                         date: date,
                     },
@@ -898,6 +959,50 @@ const getDoctorByClinic = (clinicId) => {
     });
 };
 
+const createSchedules = async (scheduleData) => {
+    try {
+        // Kiểm tra xem đã tồn tại lịch khám với doctorId, date, timeType chưa
+        const existingSchedule = await db.Schedule.findOne({
+            where: {
+                doctorId: scheduleData.doctorId,
+                date: scheduleData.date,
+                timeType: scheduleData.timeType,
+            },
+        });
+
+        if (existingSchedule) {
+            return {
+                errCode: 2,
+                errMessage: `Lịch khám với thời gian ${scheduleData.timeType} cho bác sĩ này đã tồn tại!`,
+            };
+        }
+
+        // Nếu chưa tồn tại, tạo mới lịch khám
+        const newSchedule = await db.Schedule.create(scheduleData);
+
+        // Kiểm tra xem bản ghi đã được tạo hay chưa
+        if (newSchedule) {
+            console.log("Schedule created successfully:", newSchedule);
+            return {
+                errCode: 0,
+                errMessage: "Lịch khám được tạo thành công!",
+            };
+        } else {
+            return {
+                errCode: -2,
+                errMessage: "Không thể tạo lịch khám!",
+            };
+        }
+    } catch (error) {
+        console.error("Error in createSchedule:", error);
+        return {
+            errCode: -1,
+            errMessage: "Lỗi trong quá trình tạo lịch khám.",
+        };
+    }
+};
+
+
 module.exports = {
     getTopDoctorHome,
     getAllDoctor,
@@ -913,6 +1018,8 @@ module.exports = {
     sendRemedy,
     searchDoctorByName,
     getDoctorByClinic,
+    createSchedules,
+    getListPatientForDoctorS5
 };
 //- Sequelize sẽ trả về kết quả truy vấn dưới dạng các đối tượng JavaScript thuần túy (plain JavaScript objects) thay vì các
 //đối tượng Sequelize.

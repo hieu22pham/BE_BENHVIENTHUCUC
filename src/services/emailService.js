@@ -143,7 +143,49 @@ let getBodyHTMLEmailRemedy = (dataSend) => {
     return result;
 };
 
+const sendInvoiceEmail = async (req, res) => {
+    const { patientName, patientId, services, medicines, totalAmount, recipientEmail } = req.body;
+  
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'your-email@gmail.com', // Thay bằng email của bạn
+        pass: 'your-app-password',    // App password (không phải mật khẩu tài khoản)
+      },
+    });
+  
+    // Nội dung email
+    const emailBody = `
+      <h1>Hóa đơn chi tiết</h1>
+      <p><strong>Tên bệnh nhân:</strong> ${patientName}</p>
+      <p><strong>Mã bệnh nhân:</strong> ${patientId}</p>
+      <p><strong>Tổng tiền:</strong> ${totalAmount} đ</p>
+      <h4>Dịch vụ:</h4>
+      <ul>
+        ${services.map(service => `<li>${service.serviceDetails.service_name}: ${service.serviceDetails.price} đ</li>`).join('')}
+      </ul>
+      <h4>Thuốc:</h4>
+      <ul>
+        ${medicines.map(medicine => `<li>${medicine.medicineDetails.name}: ${medicine.medicineDetails.price} đ x ${medicine.medicine_quantity}</li>`).join('')}
+      </ul>
+    `;
+  
+    try {
+      await transporter.sendMail({
+        from: 'your-email@gmail.com',
+        to: recipientEmail, // Email người nhận
+        subject: 'Hóa đơn chi tiết',
+        html: emailBody,
+      });
+      res.status(200).send({ success: true, message: 'Email sent successfully' });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      res.status(500).send({ success: false, message: 'Failed to send email', error });
+    }
+  };
+
 module.exports = {
     sendSimpleEmail,
     sendAttachment,
+    sendInvoiceEmail
 };

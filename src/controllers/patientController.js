@@ -67,6 +67,7 @@ const handleLookUpBookingHistoryForPatient = async (req, res) => {
 const handleCancleBooking = async (req, res) => {
     try {
         let id = req.params.id;
+        console.log(id)
 
         let result = await patientService.cancleBooking(id);
         return res.status(200).json(result);
@@ -127,5 +128,5 @@ module.exports = {
     handleCancleBooking,
     handleNewReview,
     handleGetDoctorRating,
-    handleGetReviews,
+    handleGetReviews
 };
