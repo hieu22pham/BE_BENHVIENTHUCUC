@@ -210,6 +210,7 @@ let initWebRoutes = (app) => {
 
     //Viết api cho doctor
     router.get("/api/top-doctor-home", doctorController.handleGetTopDoctorHome);
+
     router.get("/api/get-all-doctor", doctorController.handleGetAllDoctor);
     router.post(
         "/api/save-infor-doctor",
@@ -497,7 +498,7 @@ let initWebRoutes = (app) => {
     router.put(`/api/update-booking-status/:id`, receptionistController.handleEditBookingById);
     router.put(`/api/update-invoice-status/:id`, receptionistController.handleEditInvoiceById);
 
-    router.post(`/api/post-examination`, examinationController.handlePostExamination);
+    router.post(`/api/post-examination/:id`, examinationController.handlePostExamination);
     router.get(`/api/get-examination/:id`, examinationController.getPatientNamesByPatientId);
 
     router.post(`/api/create-invoice/:id`, invoiceController.handleCreateInvoice)

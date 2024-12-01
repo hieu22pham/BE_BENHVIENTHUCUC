@@ -82,7 +82,7 @@ const handleAddService = async (req, res) => {
         console.log("patientId: ", patientId)
 
         // Tạo mới một dịch vụ
-        await db.Service.create({
+        const data = await db.Service.create({
             service_name,
             unit_price,
             patientId,
@@ -95,6 +95,7 @@ const handleAddService = async (req, res) => {
         return res.status(201).json({
             errCode: 0,
             message: "Service added successfully!",
+            data: data
         });
     } catch (error) {
         console.error("Error in handleAddService:", error);

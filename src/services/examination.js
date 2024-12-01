@@ -14,11 +14,11 @@ const _ = require("lodash");
 const db = require("../models/index");
 const emailService = require("../services/emailService");
 
-const PostExamination = async (data) => {
+const PostExamination = async (data, patientId) => {
     return new Promise(async (resolve, reject) => {
         try {
             // Kiểm tra dữ liệu đầu vào
-            if (!data.patient_id || !data.weight || !data.height || !data.detailed_examination) {
+            if (!patientId || !data.weight || !data.height || !data.detailed_examination) {
                 return resolve({
                     errCode: 1,
                     errMessage: "Thiếu thông tin bắt buộc.",
@@ -27,7 +27,7 @@ const PostExamination = async (data) => {
 
             // Lưu thông tin vào cơ sở dữ liệu
             const result = await db.Examination.create({
-                patient_id: data.patient_id,
+                patient_id: data.patientId,
                 weight: data.weight,
                 height: data.height,
                 bmi: data.bmi,
