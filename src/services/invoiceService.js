@@ -18,6 +18,8 @@ const createInvoice = async (invoiceData, parentId) => {
       medicine_quantity: invoiceData.medicine_quantity, // Dữ liệu số lượng thuốc
     });
 
+    console.log("newInvoice: ", newInvoice)
+
     return {
       errCode: 0,
       errMessage: "Hóa đơn đã được tạo thành công",

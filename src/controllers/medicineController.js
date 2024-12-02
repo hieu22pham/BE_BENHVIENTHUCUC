@@ -69,12 +69,16 @@ let handleCreateMedicine = async (req, res) => {
 
 
 const handleGetAllMedicinesByPatientId = async (req, res) => {
-    const patientId = req.params.patientId; // Nhận patientId từ request
+    const patientId = req.query.id; // Nhận patientId từ request
+    const doctorId = req.query.doctorId; // Nhận patientId từ request
+
     console.log(`Received request for patientId: ${patientId}`);  // Log patientId
+
+    console.log()
 
     try {
         // Gọi service để lấy danh sách thuốc cho bệnh nhân theo patientId
-        const medicines = await medicinesService.getMedicinesByPatientId(patientId);
+        const medicines = await medicinesService.getMedicinesByPatientId(patientId, doctorId);
         console.log(`Medicines found: ${JSON.stringify(medicines)}`);  // Log medicines result
 
         res.json({
@@ -96,9 +100,10 @@ const handleGetAllMedicinesByPatientId = async (req, res) => {
 
 const handleGetAllServicesByPatientId = async (req, res) => {
     try {
-        const patientId = req.params.patientId;
+        const patientId = req.query.id; // Nhận patientId từ request
+        const doctorId = req.query.doctorId; // Nhận patientId từ request
 
-      const services = await medicinesService.getServicesByPatientId(patientId)
+      const services = await medicinesService.getServicesByPatientId(patientId, doctorId)
   
       res.json({
         errCode: 0,

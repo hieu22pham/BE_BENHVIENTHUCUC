@@ -55,10 +55,6 @@ const getPatientNamesByPatientId = async (req, res) => {
             raw: true, // Return simple objects (not Sequelize instances)
         });
 
-        const detail = examinations[examinations.length - 1].detailed_examination
-
-        console.log("examinations: ", examinations)
-
         if (examinations.length === 0) {
             return res.status(404).json({
                 errCode: 2,
@@ -66,8 +62,17 @@ const getPatientNamesByPatientId = async (req, res) => {
             });
         }
 
-        patients.detailed_examination = detail
+        if(examinations.length > 0){
+            const detail = examinations[examinations.length - 1].detailed_examination
 
+            console.log("examinations: ", examinations)
+    
+            
+    
+            patients.detailed_examination = detail
+        }
+
+       
         // Gắn examinations vào từng patient
         // const patientsWithExaminations = patients.map((patient) => {
         //     return {

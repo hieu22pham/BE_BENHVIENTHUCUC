@@ -467,8 +467,8 @@ let initWebRoutes = (app) => {
     router.get(`/api/get-reviews`, patientController.handleGetReviews);
 
     router.get(`/api/get-all-medicine`, medicinController.handleGetAllMedicines);
-    router.get(`/api/get-all-medicine-invoice/:patientId`, medicinController.handleGetAllMedicinesByPatientId);
-    router.get(`/api/get-all-service-invoice/:patientId`, medicinController.handleGetAllServicesByPatientId);
+    router.get(`/api/get-all-medicine-invoice`, medicinController.handleGetAllMedicinesByPatientId);
+    router.get(`/api/get-all-service-invoice`, medicinController.handleGetAllServicesByPatientId);
     router.post(
         `/api/create-medicine`,
         medicinController.handleCreateMedicine
@@ -513,9 +513,8 @@ let initWebRoutes = (app) => {
     );
     router.put(`/api/update-service/:id`, serviceHelper.handleUpdateService);
     router.post(`/api/create-service/:patientId`, serviceHelper.handleAddService)
+    router.post(`/api/create-allservice`, serviceHelper.handleAddAllService)
 
-
-    //sử dụng router cho ứng dụng
     return app.use("/", router);
 };
 

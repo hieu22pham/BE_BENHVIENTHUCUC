@@ -91,15 +91,19 @@ let createMedicines = (medicineData) => {
     });
 };
 
-let getMedicinesByPatientId = (patientId) => {
+let getMedicinesByPatientId = (patientId, doctorId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(`Fetching medicines for patientId: ${patientId}`);  // Log incoming patientId
+            console.log(`Fetching medicines for patientId: ${patientId}`); 
+            console.log(`Fetching medicines for doctorId: ${doctorId}`);  // Log incoming patientId
+             // Log incoming patientId
 
             // Query to fetch all invoices related to a patient, including the medicines
             let invoices = await db.Invoice.findAll({
                 where: {
-                    patientId: patientId,  // Filter by patientId
+                    patientId: patientId,
+                    keyTable: "medicine",
+                    doctorId: doctorId  // Filter by patientId
                 },
                 include: [
                     {
@@ -155,13 +159,16 @@ let getMedicinesByPatientId = (patientId) => {
     });
 };
 
-const getServicesByPatientId = (patientId) => {
+const getServicesByPatientId = (patientId, doctorId) => {
     return new Promise(async (resolve, reject) => {
       try {
         console.log(`Fetching services for patientId: ${patientId}`); // Log nhận đầu vào
   
         const invoices = await db.Invoice.findAll({
-          where: { patientId: patientId },
+          where: { patientId: patientId,
+            keyTable: "service",
+            doctorId: doctorId
+           },
           include: [
             {
               model: db.Service,

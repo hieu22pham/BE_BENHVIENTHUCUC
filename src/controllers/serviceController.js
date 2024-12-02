@@ -43,16 +43,13 @@ const handleGetService = async (req, res) => {
 const handleGetAllServices = async (req, res) => {
     try {
         // Lấy tất cả các dịch vụ từ bảng
-        const data = await db.Service.findAll({
+        const data = await db.AllService.findAll({
             attributes: [
                 "id",
                 "service_name",
                 "unit_price",
-                "quantity",
-                "price",
                 "notes",
                 "department",
-                "examination_id",
                 "created_at",
                 "updated_at",
             ],
@@ -90,6 +87,32 @@ const handleAddService = async (req, res) => {
             notes,
             department,
             examination_id,
+        });
+
+        return res.status(201).json({
+            errCode: 0,
+            message: "Service added successfully!",
+            data: data
+        });
+    } catch (error) {
+        console.error("Error in handleAddService:", error);
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: "Internal server error!",
+        });
+    }
+};
+
+const handleAddAllService = async (req, res) => {
+    try {
+        const { service_name, unit_price, notes, department } = req.body;
+        console.log("req.body: ", req.body)
+
+        const data = await db.AllService.create({
+            service_name,
+            unit_price,
+            notes,
+            department,
         });
 
         return res.status(201).json({
@@ -192,5 +215,6 @@ module.exports = {
     handleAddService,
     handleUpdateService,
     handleDeleteService,
-    handleGetService
+    handleGetService,
+    handleAddAllService
 };
