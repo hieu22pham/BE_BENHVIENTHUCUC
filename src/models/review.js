@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     Review.init(
         {
             doctorId: DataTypes.INTEGER,
+            patientId: DataTypes.INTEGER,
             rating: DataTypes.INTEGER,
             comment: DataTypes.TEXT,
         },

@@ -387,6 +387,7 @@ const newReview = (data) => {
             } else {
                 let review = await db.Review.create({
                     rating: data.rating,
+                    patientId: data.patientId,
                     doctorId: data.doctorId,
                     comment: data.comment ? data.comment : "",
                 });
@@ -457,23 +458,14 @@ const getDoctorRating = (doctorId) => {
 const getReviews = (doctorId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let comments = [];
-
-            const query = `
-            select Users.firstName, Users.lastName, Reviews.comment, Reviews.rating, Histories.createdAt
-            from Histories
-            inner join Reviews on Histories.reviewId = Reviews.id
-            inner join Users on Histories.patientId = Users.Id
-            where Histories.doctorId = ${doctorId};
-          `;
-
-            comments = await sequelize.query(query, {
-                type: QueryTypes.SELECT,
+            const reviews = await db.Review.findAll({
+                where: { doctorId }, // Lọc theo doctorId
+                attributes: ['doctorId', 'patientId', 'rating', 'comment'], // Chỉ lấy các trường cần thiết
             });
 
             resolve({
                 errCode: 0,
-                data: comments,
+                data: reviews,
             });
         } catch (error) {
             reject(error);
