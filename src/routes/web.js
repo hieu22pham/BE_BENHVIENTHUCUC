@@ -48,14 +48,14 @@ let initWebRoutes = (app) => {
     //viết theo chuẩn rest api
     router.post('/api/send-invoice-email', async (req, res) => {
         try {
-          const { email, patientName, patientId, services, medicines } = req.body; // Lấy dữ liệu từ body request
-          console.log("Email body: ", req.body);
-    
-          // Chủ đề email
-          const subject = `Hóa đơn dịch vụ cho bệnh nhân: ${patientName}`;
-    
-          // Xây dựng nội dung email
-          const html = `
+            const { email, patientName, patientId, services, medicines } = req.body; // Lấy dữ liệu từ body request
+            console.log("Email body: ", req.body);
+
+            // Chủ đề email
+            const subject = `Hóa đơn dịch vụ cho bệnh nhân: ${patientName}`;
+
+            // Xây dựng nội dung email
+            const html = `
             <h3>Hóa đơn chi tiết cho bệnh nhân</h3>
             <p><strong>Tên bệnh nhân:</strong> ${patientName}</p>
             <p><strong>Mã bệnh nhân:</strong> ${patientId}</p>
@@ -63,64 +63,64 @@ let initWebRoutes = (app) => {
             <h4>Dịch vụ đã sử dụng:</h4>
             <ul>
               ${services
-                .map(
-                  (service) => `
+                    .map(
+                        (service) => `
                   <li>
                     <strong>Dịch vụ ID:</strong> ${service.id} - 
                     <strong>Số lượng thuốc:</strong> ${service.medicine_quantity} - 
                     <strong>Ngày tạo:</strong> ${new Date(service.created_at).toLocaleString()}
                   </li>
                 `
-                )
-                .join('')}
+                    )
+                    .join('')}
             </ul>
     
             <h4>Thuốc đã cấp:</h4>
             <ul>
               ${medicines
-                .map(
-                  (medicine) => `
+                    .map(
+                        (medicine) => `
                   <li>
                     <strong>Thuốc ID:</strong> ${medicine.id} - 
                     <strong>Số lượng:</strong> ${medicine.medicine_quantity} - 
                     <strong>Ngày tạo:</strong> ${new Date(medicine.created_at).toLocaleString()}
                   </li>
                 `
-                )
-                .join('')}
+                    )
+                    .join('')}
             </ul>
     
             <p>Trân trọng,<br>Phòng khám ABC</p>
           `;
-    
-          // Gửi email thông qua helper
-          const emailSent = await sendMailHelper.sendMail(email, subject, html);
-          if (emailSent) {
-            res.status(200).json({ message: 'Email sent successfully!' });
-          } else {
-            res.status(500).json({ message: 'Failed to send email.' });
-          }
+
+            // Gửi email thông qua helper
+            const emailSent = await sendMailHelper.sendMail(email, subject, html);
+            if (emailSent) {
+                res.status(200).json({ message: 'Email sent successfully!' });
+            } else {
+                res.status(500).json({ message: 'Failed to send email.' });
+            }
         } catch (error) {
-          console.error("Error sending email: ", error);
-          res.status(500).json({ message: "Failed to send email." });
+            console.error("Error sending email: ", error);
+            res.status(500).json({ message: "Failed to send email." });
         }
-      });
+    });
 
     router.post('/api/confirm-schedule', async (req, res) => {
-    try {
-        // const { email, patientName, patientId, services, medicines } = req.body; // Lấy dữ liệu từ body request
-        const email = req.body.email
+        try {
+            // const { email, patientName, patientId, services, medicines } = req.body; // Lấy dữ liệu từ body request
+            const email = req.body.email
 
-        console.log("Email body: ", email);
-        console.log("req.body: ", req.body);
+            console.log("Email body: ", email);
+            console.log("req.body: ", req.body);
 
 
-        const formattedDate = new Date(+req.body.date).toLocaleDateString("vi-VN");
-        // Chủ đề email
-        const subject = `Xác nhận lịch hẹn với bác sĩ ${req.body.fullNameUser}`;
+            const formattedDate = new Date(+req.body.date).toLocaleDateString("vi-VN");
+            // Chủ đề email
+            const subject = `Xác nhận lịch hẹn với bác sĩ ${req.body.fullNameUser}`;
 
-        // Xây dựng nội dung email
-        const html = `
+            // Xây dựng nội dung email
+            const html = `
             <p>Chào bạn ${req.body.fullName}</p>
             <p>Bạn đã đặt lịch hẹn thành công với bác sĩ. ${req.body.fullNameUser} </p>
             <p>Chi tiết lịch hẹn:</p>
@@ -128,42 +128,42 @@ let initWebRoutes = (app) => {
                 <li><strong>Họ và tên: ${req.body.fullName}</strong> </li>
                 <li><strong>Ngày khám: ${formattedDate}</strong> </li>
                 <li><strong>Giờ khám: ${req.body.timeTypeValueVi} h</strong> </li>
-                <li><strong>Địa điểm:</strong> Phòng khám Thu Cúc</li>
+                <li><strong>Địa điểm:</strong> Phòng khám Đa Khoa Thu Cúc TCI 32 Đại Từ</li>
             </ul>
             <p>Vui lòng có mặt trước giờ hẹn 10 phút để được hỗ trợ tốt nhất.</p>
             <p>Trân trọng,</p>
-            <p>Phòng khám XYZ</p>
+            <p>Phòng khám Đa Khoa Thu Cúc</p>
          `;
-          
 
-        // Gửi email thông qua helper
-        const emailSent = await sendMailHelper.sendMail(email, subject, html);
-        if (emailSent) {
-        res.status(200).json({ message: 'Email sent successfully!' });
-        } else {
-        res.status(500).json({ message: 'Failed to send email.' });
+
+            // Gửi email thông qua helper
+            const emailSent = await sendMailHelper.sendMail(email, subject, html);
+            if (emailSent) {
+                res.status(200).json({ message: 'Email sent successfully!' });
+            } else {
+                res.status(500).json({ message: 'Failed to send email.' });
+            }
+        } catch (error) {
+            console.error("Error sending email: ", error);
+            res.status(500).json({ message: "Failed to send email." });
         }
-    } catch (error) {
-        console.error("Error sending email: ", error);
-        res.status(500).json({ message: "Failed to send email." });
-    }
     });
 
     router.post('/api/cancel-schedule', async (req, res) => {
         try {
             const { email, fullName, fullNameUser, date, timeTypeValueVi } = req.body;
-    
+
             // Kiểm tra các trường bắt buộc
             if (!email || !fullName || !fullNameUser || !date || !timeTypeValueVi) {
                 return res.status(400).json({ message: "Missing required fields in request body." });
             }
-    
+
             // Chuyển đổi timestamp sang ngày định dạng
             const formattedDate = new Date(+date).toLocaleDateString("vi-VN");
-    
+
             // Chủ đề email
             const subject = `Thông báo hủy lịch hẹn với bác sĩ ${fullNameUser}`;
-    
+
             // Xây dựng nội dung email
             const html = `
                 <p>Chào bạn <strong>${fullName}</strong>,</p>
@@ -173,7 +173,7 @@ let initWebRoutes = (app) => {
                 <p>Trân trọng,</p>
                 <p>Phòng khám Thu Cúc</p>
             `;
-    
+
             // Gửi email thông qua helper
             const emailSent = await sendMailHelper.sendMail(email, subject, html);
             if (emailSent) {
@@ -186,7 +186,7 @@ let initWebRoutes = (app) => {
             res.status(500).json({ message: "Failed to send email." });
         }
     });
-    
+
 
     router.get("/", getHomePage);
     router.get("/about", getAboutPage);
@@ -204,7 +204,7 @@ let initWebRoutes = (app) => {
     router.get("/api/get-all-users", userController.handleGetAllUser); //http://localhost:8080/api/get-all-users?id=1
     router.post("/api/create-new-user", userController.handleCreateNewUser);
     router.put("/api/edit-user/:id", userController.handleEditUser);
-    router.delete("/api/delete-user/:id", userController.handleDeleteUser); 
+    router.delete("/api/delete-user/:id", userController.handleDeleteUser);
     router.get("/api/allcode", userController.handleGetAllCode);
     router.post("/api/change-password", userController.handleChangePassword);
 

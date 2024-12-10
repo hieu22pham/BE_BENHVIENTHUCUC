@@ -9,8 +9,7 @@ module.exports.sendMail = async (email, subject, html) => {
     //   port: 587,
     //   secure: false, // true for port 465, false for other ports
     //   auth: {
-    //     user: "phammhieu2211@gmail.com",
-    //     pass: "keww ibkc cedw zqzz",
+    //     user: "",
     //   },
     //   tls: {
     //     rejectUnauthorized: false, // Tắt kiểm tra SSL nếu cần
@@ -20,8 +19,8 @@ module.exports.sendMail = async (email, subject, html) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail', // Hoặc host: 'smtp.gmail.com'
       auth: {
-        user: 'phammhieu2211@gmail.com', // Email của bạn
-        pass: 'keww ibkc cedw zqzz', // Mật khẩu ứng dụng
+        user: process.env.EMAIL_APP,
+        pass: process.env.EMAIL_APP_PASSWORD,
       },
     });
 
@@ -36,7 +35,7 @@ module.exports.sendMail = async (email, subject, html) => {
     // Gửi email
     const info = await transporter.sendMail(mailOptions);
 
-    if(info){
+    if (info) {
       console.log("Email sent successfully:", info.response); // Log kết quả gửi thành công
     }
 

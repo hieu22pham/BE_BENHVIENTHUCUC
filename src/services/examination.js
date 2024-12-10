@@ -31,6 +31,7 @@ const PostExamination = async (data, patientId) => {
                 weight: data.weight,
                 height: data.height,
                 bmi: data.bmi,
+                doctorId: data.doctorId,
                 temperature: data.temperature,
                 heart_rate: data.heart_rate,
                 blood_pressure: data.blood_pressure,

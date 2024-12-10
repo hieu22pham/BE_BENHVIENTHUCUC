@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       patient_id: DataTypes.INTEGER,           // Mã bệnh nhân
       weight: DataTypes.DECIMAL(5, 2),         // Cân nặng (kg)
       height: DataTypes.DECIMAL(5, 2),         // Chiều cao (cm)
-      temperature: DataTypes.DECIMAL(4, 1),    // Nhiệt độ (°C)
+      temperature: DataTypes.DECIMAL(4, 1),
+      doctorId: DataTypes.INTEGER,   // Nhiệt độ (°C)
       heart_rate: DataTypes.INTEGER,           // Nhịp tim (lần/phút)
       blood_pressure: DataTypes.INTEGER,       // Huyết áp (mmHg)
       bmi: DataTypes.DECIMAL(10, 6),           // Chỉ số BMI

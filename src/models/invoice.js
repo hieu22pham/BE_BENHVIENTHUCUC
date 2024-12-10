@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER, // Cột này liên kết với bảng Service hoặc Medicine
         allowNull: false,
       },
+      doctorId: {
+        type: DataTypes.INTEGER, // Cột này liên kết với bảng Service hoặc Medicine
+        allowNull: false,
+      },
       keyTable: {
         type: DataTypes.TEXT,
         allowNull: false,

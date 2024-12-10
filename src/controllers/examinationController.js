@@ -38,17 +38,17 @@ const getPatientNamesByPatientId = async (req, res) => {
     }
 
     try {
-        const patients = await db.Booking.findOne({
-            where: { patientId: patientId }, // Filter by patientId
-            raw: true, // Return simple objects (not Sequelize instances)
-        });
+        // const patients = await db.Booking.findOne({
+        //     where: { patientId: patientId }, // Filter by patientId
+        //     raw: true, // Return simple objects (not Sequelize instances)
+        // });
 
-        if (patients.length === 0) {
-            return res.status(404).json({
-                errCode: 2,
-                errMessage: "Không tìm thấy bệnh nhân với ID này.", // No patients found
-            });
-        }
+        // if (patients.length === 0) {
+        //     return res.status(404).json({
+        //         errCode: 2,
+        //         errMessage: "Không tìm thấy bệnh nhân với ID này.", // No patients found
+        //     });
+        // }
 
         const examinations = await db.Examination.findAll({
             where: { patient_id: patientId }, // Filter by patientId
@@ -62,17 +62,16 @@ const getPatientNamesByPatientId = async (req, res) => {
             });
         }
 
-        if(examinations.length > 0){
-            const detail = examinations[examinations.length - 1].detailed_examination
+        // var patients = {}
+        // if (examinations.length > 0) {
+        //     const detail = examinations[examinations.length - 1].detailed_examination
 
-            console.log("examinations: ", examinations)
-    
-            
-    
-            patients.detailed_examination = detail
-        }
+        //     console.log("examinations: ", examinations)
 
-       
+        //     patients.detailed_examination = detail
+        // }
+
+
         // Gắn examinations vào từng patient
         // const patientsWithExaminations = patients.map((patient) => {
         //     return {
@@ -88,7 +87,7 @@ const getPatientNamesByPatientId = async (req, res) => {
 
         return res.status(200).json({
             errCode: 0,
-            data: patients,
+            data: examinations,
         });
     } catch (error) {
         console.error("Error in getPatientNamesByPatientId:", error);
@@ -99,7 +98,6 @@ const getPatientNamesByPatientId = async (req, res) => {
         });
     }
 };
-
 
 module.exports = {
     handlePostExamination,

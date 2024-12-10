@@ -10,10 +10,12 @@ const createInvoice = async (invoiceData, parentId) => {
       };
     }
 
+
     // Tiến hành lưu hóa đơn vào bảng Invoice
     const newInvoice = await db.Invoice.create({
       patientId: parentId,  // Dữ liệu parentId
       parentId: invoiceData.parentId,
+      doctorId: invoiceData.doctorId,
       keyTable: invoiceData.keyTable,  // Dữ liệu keyTable (medicine hoặc service)
       medicine_quantity: invoiceData.medicine_quantity, // Dữ liệu số lượng thuốc
     });

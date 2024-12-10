@@ -187,7 +187,7 @@ const handleDeleteService = async (req, res) => {
         console.log(id)
 
         // Xóa dịch vụ theo ID
-        const rowsDeleted = await db.Service.destroy({ where: { id } });
+        const rowsDeleted = await db.AllService.destroy({ where: { id } });
 
         if (rowsDeleted === 0) {
             return res.status(404).json({
